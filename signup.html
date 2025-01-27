@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="background-container">
+        <div class="login-container">
+            <div class="header">
+                <div class="logo">
+                    <img src="https://i.postimg.cc/R0bVmy6h/Aspose-Words-66f32062-72e4-4635-a1d4-fba0b612a4de-001.png" alt="Suchna Sangam Logo">
+                </div>
+                <div class="profile-icon">
+                    <img src="https://www.freeiconspng.com/uploads/am-a-19-year-old-multimedia-artist-student-from-manila--21.png" alt="Profile Icon">
+                </div>
+            </div>
+            <h2>Signup</h2>
+            <form id="signup-form">
+                <div class="input-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label for="role">Role</label>
+                    <input type="text" id="role" name="role" placeholder="Enter your role (e.g., Operator, Bureaucrat)" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter a password" required>
+                </div>
+                <button type="submit" class="login-button">Signup</button>
+            </form>
+            <div class="signup-link">
+                <p>Already have an account? <a href="login.html">Login here</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        const signupForm = document.getElementById("signup-form");
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const role = document.getElementById("role").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const response = await fetch("http://localhost:8080/api/auth/signup", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, role, password }),
+                });
+
+                if (response.ok) {
+                    alert("Signup successful! You can now log in.");
+                    window.location.href = "login.html";
+                } else {
+                    const error = await response.json();
+                    alert(`Signup failed: ${error.message}`);
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                alert("An error occurred. Please try again.");
+            }
+        });
+    </script>
+</body>
+</html>
