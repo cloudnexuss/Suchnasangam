@@ -1,5 +1,6 @@
 package com.example.suchna_sangam.controller;
 
+
 import com.example.suchna_sangam.model.LoginRequest;
 import com.example.suchna_sangam.model.SignupRequest;
 import com.google.cloud.firestore.Firestore;
@@ -10,11 +11,11 @@ import com.google.firebase.cloud.FirestoreClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -54,59 +55,46 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest loginRequest) {
         try {
-            // Attempt to sign in using Firebase Authentication
-            FirebaseAuth.getInstance().getUserByEmail(loginRequest.getEmail());
+            // Verify the user's email and password using Firebase REST API
+            String firebaseAuthUrl = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAglVSe0BPl__DNryAArCs-sXsWq1LNNQE";
+            Map<String, String> payload = new HashMap<>();
+            payload.put("email", loginRequest.getEmail());
+            payload.put("password", loginRequest.getPassword());
+            payload.put("returnSecureToken", "true");
 
-            // Fetch user details from Firestore
-            var userSnapshot = firestore.collection("users")
-                    .whereEqualTo("email", loginRequest.getEmail())
-                    .get()
-                    .get();
+            // Make an HTTP POST request to Firebase REST API
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<Map> firebaseResponse = restTemplate.postForEntity(firebaseAuthUrl, payload, Map.class);
 
-            if (userSnapshot.isEmpty()) {
-                // Return unauthorized response if no user is found
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid email or password."));
-            }
+            if (firebaseResponse.getStatusCode() == HttpStatus.OK) {
+                // Login successful, fetch user details from Firestore
+                var userSnapshot = firestore.collection("users")
+                        .whereEqualTo("email", loginRequest.getEmail())
+                        .get()
+                        .get();
 
-            // Assuming email uniqueness, fetch the first document
-            var userDocument = userSnapshot.getDocuments().get(0);
-            var userData = userDocument.getData();
+                if (userSnapshot.isEmpty()) {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "User data not found."));
+                }
 
-            if (userData == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid user data."));
-            }
+                var userDocument = userSnapshot.getDocuments().get(0);
+                var userData = userDocument.getData();
 
-            // Extract the user role
-            String role = (String) userData.getOrDefault("role", "User");
-
-            // Construct the response for the "Operator" role with redirect URL
-            if ("Operator".equalsIgnoreCase(role)) {
-                return ResponseEntity.ok(Map.of(
-                        "message", "Login successful. Redirecting to Unsplash...",
-                        "redirectUrl", "https://unsplash.com",
-                        "role", role,
-                        "data", Map.of(
-                                "userId", userDocument.getId(),
-                                "email", loginRequest.getEmail()
-                        )
+                // Construct the response
+                String role = (String) userData.getOrDefault("role", "User");
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "Login successful.");
+                response.put("role", role);
+                response.put("data", Map.of(
+                        "userId", userDocument.getId(),
+                        "email", loginRequest.getEmail()
                 ));
+
+                return ResponseEntity.ok(response);
             }
 
-            // For other roles, return a generic login success message and user details
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Login successful.");
-            response.put("role", role);
-            response.put("data", Map.of(
-                    "userId", userDocument.getId(),
-                    "email", loginRequest.getEmail()
-            ));
-
-            return ResponseEntity.ok(response);
-
-        } catch (FirebaseAuthException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "Invalid email or password."));
-        } catch (InterruptedException | ExecutionException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid email or password."));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "Error logging in: " + e.getMessage()));
         }
