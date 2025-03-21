@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+ 
+body {
+    padding: 0;
+    margin: 0;
+    background:
+        radial-gradient(circle at top left, rgba(0, 102, 255, 0.4), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(0, 102, 255, 0.4), transparent 40%),
+        linear-gradient(to bottom right, #010725, #010725, #010725);
+        background-size:cover;
+        background-attachment: fixed;
+    font-family: "DM Sans", serif;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 100vh;
+      overflow-x: hidden;
+      overflow-anchor: hidden ;
+  }
+  
+.navbar {
+    width: 95%;
+    height: 10%;
+    margin-top: 2px;
+    position: sticky;
+    top: 0;
+    z-index: 10; 
+  }
+  
+  .navbar .upper-section ul {
+    list-style: none;
+    padding-left: 280px;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .navbar a {
+    text-decoration: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 29px;
+   
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar a:hover {
+    text-decoration: underline;
+    text-decoration-color: #c47d3b;
+    text-underline-offset: 8px ;
+  }
+  .upper-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+  
+  
+  
+  .right-pic {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    margin-top: 10px;
+  
+  }
+  
+  .right-pic i {
+    font-size: 80px;
+    color: white; 
+    position: relative;
+    margin-top: -2px;
+    margin-right:50px ;
+  }
+  .right-pic i:hover {
+    transform: scale(1.1);
+    color: #ff8c00;
+}
+  .user-des p {
+    margin: 10px 0 0;
+    font-size: 21px;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+  }
+
+.container {
+  display: flex;
+  align-items: center;
+  gap:5px; 
+  margin-left:5px
+}
+.back-arrow {
+  position: flex;
+  font-size: 80px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.title {
+  font-size: 55px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: white; 
+  margin-top:  70px ;
+  margin-left: 40px;
+}
+
+.buttons button {
+
+    background:white;
+    color:blue;
+    border: none;
+    margin-left: 550px;
+    margin-top: 100px;
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 25px;
+    font-weight: bold;
+    font-family: "DM Sans", serif;
+    padding: 25px 75px;
+    transition: transform 0.3s ease-in-out;
+}
+  
+  .buttons button:hover {
+    background:blue;
+    color:white;
+    transform: scale(0.9);
+
+  }
+  .logo-ss {
+    position: absolute;
+    top: -30px; 
+    left: 50px; 
+    width: 40px; 
+  }
+  .avtar{
+    margin-left:950px ;
+    margin-top:-300px;
+  }

@@ -1,0 +1,148 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right, #003465, #0085ff, #003465);
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.left-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-section img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+}
+
+.right-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 600px;
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.logo img {
+    max-width: 150px;
+    height: auto;
+}
+
+.prof_icon {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    width: 120px;
+    height: 60px;
+}
+
+.prof_icon img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    margin-top: -20px;
+}
+
+.login-title {
+    font-size: 32px;
+    color: #000000;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-box label {
+    display: block;
+    text-align: left;
+    margin: 10px 0;
+    color: #000000;
+}
+
+.login-box input {
+    width: 90%;
+    padding: 10px 5px;
+    border: 1px solid #ccc;
+    border-radius: 80px;
+}
+
+.forgot-password {
+    display: block;
+    text-align: right;
+    margin: 10px 0;
+    color: #2f00ff;
+    text-decoration: none;
+}
+
+.login-box button {
+    background: #11abbf;
+    color: #fff;
+    padding: 7px 50px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.login-box button:hover {
+    background: #0056b3;
+}
+
+.login-box p a {
+    color: #ff4500;
+    text-decoration: none;
+}
+/* Input box styling */
+.login-box input {
+    width: 90%;
+    padding: 10px 5px;
+    border: 1px solid #ccc;
+    border-radius: 80px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+/* Change border color on focus */
+.login-box input:focus {
+    border: 3px solid #00c7be;
+    box-shadow: 0 0 5px rgba(0, 199, 190, 0.5);
+}
+
+/* Style adjustments for better visibility */
+.login-box input::placeholder {
+    color: #888;
+}

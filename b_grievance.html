@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchnasangam - Grievance</title>
+    <link rel="stylesheet" href="b_grievance.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .grievance-item b {
+            font-size: 1.1em;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: capitalize;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin-top: 10px;
+        }
+        .grievance-item {
+    position: relative;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: white;
+    transition: background 0.3s ease-in-out;
+}
+
+.button-group {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+}
+
+.grievance-item:hover .button-group {
+    display: flex;
+    gap: 5px;
+}
+
+.update-btn {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.in-progress-btn {
+    background-color: orange;
+    color: white;
+}
+
+.resolved-btn {
+    background-color: green !important;
+    color: white;
+}
+
+
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <div class="logo-ss">
+                <img src="logow.png" alt="Suchnasangam Logo" width="200" height="200"/>
+            </div>
+            <ul>
+                <li><a href="b_home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="b_git.html">Contact Us</a></li>
+            </ul>
+            <div class="right-user">
+                <div class="right-pic">
+                    <i class="fa fa-user-circle"></i>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h2 class="history-title">Operators Having Unresolved or Pending Grievances</h2>
+            <div class="box">
+                <ul id="operatorsList"></ul>
+            </div>
+            
+            <h2 class="history-title" id="pendingTitle">Pending Grievances</h2>
+            <div class="box history-section" id="pendingGrievances">
+                <div class="grievance-list">
+                    <ul id="grievancesList"></ul>
+                </div>
+            </div>
+        </div>
+        <script>
+        const API_BASE = "http://13.202.187.157:8080";
+
+async function fetchBureaucratDetails() {
+    try {
+        const bureaucratId = localStorage.getItem("uid");
+        if (!bureaucratId) throw new Error("Bureaucrat UID not found in localStorage");
+
+        const response = await fetch(`${API_BASE}/users/${bureaucratId}`);
+        if (!response.ok) throw new Error("Failed to fetch bureaucrat details");
+
+        const bureaucratData = await response.json();
+        const districtId = bureaucratData.districtId;
+        if (!districtId) throw new Error("District ID missing from bureaucrat details");
+
+        localStorage.setItem("district_id", districtId);
+        fetchOperatorsWithPendingGrievances(districtId);
+    } catch (error) {
+        console.error("Error fetching bureaucrat details:", error);
+    }
+}
+
+async function fetchOperatorsWithPendingGrievances(districtId) {
+    try {
+        console.log(`Fetching operators with pending grievances for district: ${districtId}`);
+        
+        const response = await fetch(`${API_BASE}/grievances/${districtId}/pending-operators`);
+        console.log("Response Status:", response.status);
+
+        if (!response.ok) throw new Error(`Failed to fetch operator UIDs: ${response.status} - ${response.statusText}`);
+
+        const responseText = await response.text();
+        console.log("Raw Response Text:", responseText);
+
+        if (!responseText) {
+            throw new Error("Empty response received from the server.");
+        }
+
+        const operatorUIDs = JSON.parse(responseText);
+        console.log("Fetched Operator UIDs:", operatorUIDs);
+
+        const operators = await Promise.all(operatorUIDs.map(async (operatorId) => {
+            console.log(`Fetching details for operator: ${operatorId}`);
+
+            const userResponse = await fetch(`${API_BASE}/users/${operatorId}`);
+            console.log(`Response Status for ${operatorId}:`, userResponse.status);
+
+            if (!userResponse.ok) {
+                console.warn(`Failed to fetch details for operator: ${operatorId}`);
+                return { id: operatorId, name: "Unknown Operator" };
+            }
+
+            const userDataText = await userResponse.text();
+            console.log(`Raw User Data for ${operatorId}:`, userDataText);
+
+            if (!userDataText) {
+                console.warn(`Empty response for operator: ${operatorId}`);
+                return { id: operatorId, name: "Unknown Operator" };
+            }
+
+            const userData = JSON.parse(userDataText);
+            console.log(`Fetched Data for ${operatorId}:`, userData);
+
+            return { id: operatorId, name: userData.name };
+        }));
+
+        console.log("Final Operator List:", operators);
+        displayOperators(operators, districtId);
+    } catch (error) {
+        console.error("Error fetching operators:", error);
+    }
+}
+
+
+function displayOperators(operators, districtId) {
+    const operatorsList = document.getElementById("operatorsList");
+    operatorsList.innerHTML = "";
+
+    operators.forEach(operator => {
+        const button = document.createElement("button");
+        button.textContent = operator.name;
+        button.classList.add("operator-button");
+        button.dataset.operatorId = operator.id;
+        button.addEventListener("click", () => {
+            document.getElementById("pendingTitle").innerText = `PENDING GRIEVANCES BY ${operator.name.toUpperCase()}`;
+            localStorage.setItem("operator_id", operator.id);
+            fetchGrievancesForOperator(districtId, operator.id);
+        });
+        operatorsList.appendChild(button);
+    });
+}
+
+async function fetchGrievancesForOperator(districtId, operatorId) {
+    try {
+        const response = await fetch(`${API_BASE}/grievances/${districtId}/operator/${operatorId}`);
+        if (!response.ok) throw new Error("Failed to fetch grievances");
+
+        const grievances = await response.json();
+        displayGrievances(grievances, districtId, operatorId);
+    } catch (error) {
+        console.error("Error fetching grievances:", error);
+    }
+}
+
+function displayGrievances(grievances, districtId, operatorId) {
+    const grievancesList = document.getElementById("grievancesList");
+    grievancesList.innerHTML = "";
+
+    grievances.forEach(grievance => {
+        const listItem = document.createElement("li");
+        listItem.classList.add("grievance-item");
+        listItem.innerHTML = `
+            <b>${grievance.subject}</b><br>${grievance.description}<br>
+            <span class="status-badge status-${grievance.status.toLowerCase()}">${grievance.status}</span>
+            <div class="button-group">
+                ${grievance.status.toLowerCase() === "pending" ? `<button class="update-btn in-progress-btn" data-id="${grievance.id}" data-status="in-progress">In-Progress</button>` : ""}
+                ${grievance.status.toLowerCase() !== "resolved" ? `<button class="update-btn resolved-btn" data-id="${grievance.id}" data-status="resolved">Resolved</button>` : ""}
+            </div>
+        `;
+
+        grievancesList.appendChild(listItem);
+    });
+
+    addUpdateEventListeners(districtId, operatorId);
+}
+
+function addUpdateEventListeners(districtId, operatorId) {
+    document.querySelectorAll(".update-btn").forEach(button => {
+        button.addEventListener("click", async (event) => {
+            const grievanceId = event.target.dataset.id;
+            const newStatus = event.target.dataset.status;
+
+            try {
+    const response = await fetch(`${API_BASE}/grievances/${districtId}/update-status/${grievanceId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ newStatus: newStatus }) // ✅ Ensure JSON structure matches GrievanceStatusRequest
+    });
+
+    const responseText = await response.text(); // Read response body
+
+    if (!response.ok) throw new Error(`Failed to update grievance status: ${response.status} - ${responseText}`);
+
+    console.log(`✅ Grievance ${grievanceId} updated to ${newStatus}`);
+    console.log("🔹 Response:", responseText);
+
+    fetchGrievancesForOperator(districtId, operatorId); // Refresh list dynamically
+} catch (error) {
+    console.error("🚨 Error updating grievance status:", error);
+}
+
+        });
+    });
+}
+
+// Fetch data when the page loads
+fetchBureaucratDetails();
+
+    </script>
+    </main>
+</body>
+</html>

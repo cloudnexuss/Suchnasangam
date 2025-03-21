@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchnasangam - Grievance</title>
+    <link rel="stylesheet" href="Op_grievance.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <div class="logo-ss">
+                <img src="logow.png" alt="Suchnasangam Logo" width="200" height="200"/>
+            </div>
+            <ul>
+                <li><a href="op_home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="op_git.html">Contact Us</a></li>
+            </ul>
+            <div class="right-user">
+                <div class="right-pic">
+                    <i class="fa fa-user-circle"></i>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <span class="title">ALERTS</span>
+        </div>
+        <div class="box history-section">
+            
+            <div class="grievance-list"></div>
+        </div>
+    </main>
+
+    <script>
+
+const API_BASE = "http://13.202.187.157:8080";
+
+async function fetchOperatorDetails() {
+    try {
+        const operatorId = localStorage.getItem("uid");
+        if (!operatorId) throw new Error("operator UID not found in localStorage");
+
+        const response = await fetch(`${API_BASE}/users/${operatorId}`);
+        if (!response.ok) throw new Error("Failed to fetch operator details");
+
+        const operatorData = await response.json();
+        const districtId = operatorData.districtId;
+        if (!districtId) throw new Error("District ID missing from operator details");
+
+        localStorage.setItem("district_id", districtId);
+        return { districtId, operatorId };
+    } catch (error) {
+        console.error("Error fetching operator details:", error);
+    }
+}
+
+async function markAllAlertsAsSeen(districtId, operatorId) {
+    try {
+        const response = await fetch(`${API_BASE}/api/alerts/${districtId}/seen/${operatorId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) throw new Error("Failed to mark all alerts as seen");
+
+        console.log(`All alerts for operator ${operatorId} in district ${districtId} marked as seen`);
+    } catch (error) {
+        console.error("Error marking alerts as seen:", error);
+    }
+}
+
+async function fetchAlertHistory(districtId) {
+    try {
+        const response = await fetch(`${API_BASE}/api/alerts/${districtId}`);
+        if (!response.ok) throw new Error("Failed to fetch alert history");
+
+        const alerts = await response.json();
+        const historyContainer = document.querySelector(".grievance-list");
+        historyContainer.innerHTML = "";
+
+        alerts.forEach(alert => {
+            const alertElement = document.createElement("div");
+            alertElement.classList.add("grievance-item");
+            alertElement.innerHTML = `
+                <h3 class="grievance-subject"> ${alert.message}</h3>
+                <button class="published-date" disabled> ${alert.publishedOn}</button>
+            `;
+            historyContainer.appendChild(alertElement);
+        });
+
+    } catch (error) {
+        console.error("Error fetching alert history:", error);
+    }
+}
+
+// Load everything on page load
+window.onload = async function () {
+    const { districtId, operatorId } = await fetchOperatorDetails();
+    if (districtId && operatorId) {
+        await markAllAlertsAsSeen(districtId, operatorId); // Mark all alerts as seen when page loads
+        fetchAlertHistory(districtId); // Fetch alerts after marking them seen
+    }
+};
+
+        </script>
+
+
+
+
+
+
+    
+   
+</body>
+</html>

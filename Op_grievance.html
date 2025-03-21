@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchnasangam - Grievance</title>
+    <link rel="stylesheet" href="Op_grievance.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <div class="logo-ss">
+                <img src="logow.png" alt="Suchnasangam Logo" width="200" height="200"/>
+            </div>
+            <ul>
+                <li><a href="op_home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="op_git.html">Contact Us</a></li>
+            </ul>
+            <div class="right-user">
+                <div class="right-pic">
+                    <i class="fa fa-user-circle"></i>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <span class="title">Grievance</span>
+        </div>
+        <div class="box">
+            <form class="grievance-form" id="grievanceForm">
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" name="subject" placeholder="Briefly describe your issue" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Provide details of your grievance" rows="5" required></textarea>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="box history-section">
+            <h2 class="history-title">History of Grievances</h2>
+            <div class="grievance-list"></div>
+        </div>
+    </main>
+
+    <script>
+        const API_BASE = "http://13.202.187.157:8080";
+        const operatorId = localStorage.getItem("uid");
+
+        if (!operatorId) {
+            alert("User details missing. Please log in again.");
+            window.location.href = "s_login.html";
+        } else {
+            getUserDetails(operatorId);
+        }
+
+        async function getUserDetails(userId) {
+            try {
+                const response = await fetch(`${API_BASE}/users/${userId}`);
+                if (!response.ok) throw new Error("Failed to fetch user details");
+
+                const userData = await response.json();
+                localStorage.setItem("district_id", userData.districtId);
+                localStorage.setItem("operator_name", userData.name);
+               
+
+                loadGrievanceHistory(userData.districtId);
+            } catch (error) {
+                console.error("Error fetching user details:", error);
+                alert("Failed to load user details. Please log in again.");
+                window.location.href = "s_login.html";
+            }
+        }
+
+        document.getElementById('grievanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const subject = document.getElementById('subject').value;
+            const description = document.getElementById('description').value;
+            const districtId = localStorage.getItem("district_id");
+            const operatorName = localStorage.getItem("operator_name");
+
+            if (!districtId || !operatorName) {
+                alert("User details missing. Please refresh the page.");
+                return;
+            }
+
+            const grievanceData = {
+                subject,
+                description,
+                operatorId,
+                operatorName,
+                status: "pending",
+                timestamp: Date.now()
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/grievances/${districtId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(grievanceData)
+                });
+
+                if (response.ok) {
+                    alert("Grievance submitted successfully!");
+                    
+                    loadGrievanceHistory(districtId);
+                } else {
+                    alert("Failed to submit grievance.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+
+        async function loadGrievanceHistory(districtId) {
+            try {
+                const response = await fetch(`${API_BASE}/grievances/${districtId}/operator/${operatorId}/history`);
+                if (!response.ok) {
+                    document.querySelector(".grievance-list").innerHTML = "<p>No grievances found.</p>";
+                    return;
+                }
+
+                const grievances = await response.json();
+                const grievanceList = document.querySelector(".grievance-list");
+                grievanceList.innerHTML = "";
+
+                grievances.forEach(g => {
+                    const item = document.createElement("div");
+                    item.classList.add("grievance-item");
+                    item.innerHTML = `
+                        <h3 class="grievance-subject">${g.subject}</h3>
+                        <p class="grievance-desc">${g.description}</p>
+                        <span class="grievance-status ${g.status.toLowerCase()}">${g.status}</span>
+                    `;
+                    grievanceList.appendChild(item);
+                });
+            } catch (error) {
+                console.error("Error loading grievance history:", error);
+            }
+        }
+    </script>
+</body>
+</html>

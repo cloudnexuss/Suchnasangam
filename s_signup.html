@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signup - Suchna Sangam</title>
+    <link rel="stylesheet" href="s_signup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <img src="sboy.svg" alt="Boy with laptop">
+        </div>
+        <div class="right-section">
+            <div class="login-box">
+                <div class="logo">
+                    <img src="logo.svg" alt="Suchna Sangam Logo">
+                </div>
+                <div class="prof_icon">
+                    <img src="Male User.svg" alt="Icon">
+                </div>
+                
+                <h1 class="login-title">Sign up</h1>
+                
+                <form id="signup-form">
+                    <label for="username">Username </label>
+                    <input type="text" id="username" placeholder="username" required>
+
+                    <label for="email">Email </label>
+                    <input type="text" id="email" placeholder="email" required>
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Password" required>
+
+                    <label for="Role">Role</label>
+                    <select id="Role" name="Role" required>
+                        <option value="" disabled selected>Select your Role</option>
+                        <option value="operator">Operator</option>
+                        <option value="bureaucrat">bureaucrat</option>
+                        </select>
+                    
+                        <label for="district">District</label>
+                        <select id="district" name="district" required>
+                            <option value="" disabled selected>Select Your District</option>
+                            <option value="Anugul">Anugul</option>
+                            <option value="Balangir">Balangir</option>
+                            <option value="Balasore">Balasore</option>
+                            <option value="Bargarh">Bargarh</option>
+                            <option value="Bhadrak">Bhadrak</option>
+                            <option value="Boudh">Boudh</option>
+                            <option value="Cuttack">Cuttack</option>
+                            <option value="Deogarh">Deogarh</option>
+                            <option value="Dhenkanal">Dhenkanal</option>
+                            <option value="Gajapati">Gajapati</option>
+                            <option value="Ganjam">Ganjam</option>
+                            <option value="Jagatsinghpur">Jagatsinghpur</option>
+                            <option value="Jajpur">Jajpur</option>
+                            <option value="Jharsuguda">Jharsuguda</option>
+                            <option value="Kalahandi">Kalahandi</option>
+                            <option value="Kandhamal">Kandhamal</option>
+                            <option value="Kendrapara">Kendrapara</option>
+                            <option value="Keonjhar">Keonjhar</option>
+                            <option value="Khordha">Khordha</option>
+                            <option value="Koraput">Koraput</option>
+                            <option value="Malkangiri">Malkangiri</option>
+                            <option value="Mayurbhanj">Mayurbhanj</option>
+                            <option value="Nabarangpur">Nabarangpur</option>
+                            <option value="Nayagarh">Nayagarh</option>
+                            <option value="Nuapada">Nuapada</option>
+                            <option value="Puri">Puri</option>
+                            <option value="Rayagada">Rayagada</option>
+                            <option value="Sambalpur">Sambalpur</option>
+                            <option value="Subarnapur">Subarnapur</option>
+                            <option value="Sundargarh">Sundargarh</option>
+                        </select>
+                        <label for="Circle" class="Circle">Circle </label>
+                        <input type="text" id="Circle" placeholder="Circle" required>
+    
+
+                        
+                   
+                    <button type="submit">Signup</button>
+                </form>
+                <p>Already Have An Account?<a href="s_login.html">Signin</a></p>
+            </div>
+        </div>
+    </div>
+
+
+     
+    <script>
+        document.getElementById("signup-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById("username").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const role = document.getElementById("Role").value;
+            const district = document.getElementById("district").value;
+            const circle = document.getElementById("Circle").value;
+            
+            try {
+                const response = await fetch("http://13.202.187.157:8080/api/auth/signup", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password, role, district, circle }),
+                });
+
+                if (response.ok) {
+                    alert("Signup successful! You can now log in.");
+                    window.location.href = "s_login.html";
+                } else {
+                    const error = await response.json();
+                    alert(`Signup failed: ${error.message}`);
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                alert("An error occurred. Please try again.");
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Suchna Sangam</title>
+    <link rel="stylesheet" href="s_login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <img src="boy.svg" alt="Boy with laptop">
+        </div>
+        <div class="right-section">
+            <div class="login-box">
+                <div class="logo">
+                    <img src="logo.svg" alt="Suchna Sangam Logo">
+                </div>
+                <div class="prof_icon">
+                    <img src="Male User.svg" alt="Icon">
+                </div>
+                
+                <h1 class="login-title">Login</h1>
+                
+                <form id="loginForm" method="POST">
+                    <label for="username">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Password" required>
+
+                    <a href="reset.html" class="forgot-password">Forgot password?</a>
+                    <button type="submit">Login</button>
+                </form>
+                <p>Don’t have an account yet? <a href="s_signup.html">Sign up</a></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const roleMessage = document.getElementById("roleMessage");
+
+            try {
+                const response = await fetch("http://13.202.187.157:8080/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log("Received data:", data);
+
+                    localStorage.setItem("uid", data.uid);
+                    localStorage.setItem("email", data.email);
+                    localStorage.setItem("role", data.role);
+
+                    if (data.role === "operator") {
+                        window.location.href = "op_home.html";
+                    } else if (data.role === "bureaucrat") {
+                        window.location.href = "b_home.html";
+                    } else {
+                        window.location.href = "youtube.com";
+                    }
+                } else {
+                    alert("Invalid user credentials. Please try again.");
+                }
+            } catch (err) {
+                alert("An error occurred. Please try again.");
+            }
+        });
+
+          // Function to disable navigation
+    function disableNavigation() {
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () {
+            history.pushState(null, null, location.href);
+        };
+    }
+
+    // Prevent user from navigating back or forward
+    window.onload = function () {
+        disableNavigation();
+    };
+    </script>
+
+
+</body>
+</html>

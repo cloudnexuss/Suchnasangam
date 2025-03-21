@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchnasangam</title>
+    <link rel="stylesheet" href="op_videoconferencing.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <ul>
+                <li><a href="op_home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="op_git.html">Contact Us</a></li>
+            </ul>
+            <div class="logo-ss">
+                <img src="ss.png" alt="back-arrow Logo"width="200px" height="200px"/>
+            </div>
+            <div class="right-user">
+                <div class="right-pic">
+                    <i class="fa fa-user-circle" aria-hidden="true">
+                        
+                    </i>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+    <main>
+        
+        <div class="container">
+            <!-- <div class="back-arrow">
+                <img src="Vector.png" alt="back-arrow Logo"width="60px" height="51px"/>
+            </div> -->
+            <span class="title">VIDEO CONFERENCING</span>
+        </div>
+        <div class="buttons">
+            <a href="https://meet.google.com/"><button class="box1">JOIN A CONFERENCE</button></a>
+        </div>
+       
+            <div class="avtar">
+                <img src="avtar.svg" alt="back-arrow Logo"width="680px" height="570px"/>
+            </div>
+    </main>
+
+    <script>
+        const API_BASE = "http://13.202.187.157:8080";
+                const operatorId = localStorage.getItem("uid");
+        
+                
+                    fetchOperatorDetails(operatorId);
+                
+        
+        
+        
+        async function fetchOperatorDetails(operatorId) {
+            try {
+                // Replace with your actual API endpoint
+                const response = await fetch(`${API_BASE}/users/${operatorId}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch operator details");
+                }
+                
+                const operatorData = await response.json();
+                 // Assuming API returns { name: "John Doe" }
+        
+                // Update the user-des p element
+               
+            } catch (error) {
+                console.error("Error fetching operator details:", error);
+            }
+        }
+        </script>
+</body>
+</html>

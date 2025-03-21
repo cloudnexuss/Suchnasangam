@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://suchnasangam.s3.ap-south-1.amazonaws.com/favicon.ico" type="image/x-icon" sizes="128x128">
+    <title>Suchnasangam</title>
+    <link rel="stylesheet" href="welcome.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <ul>
+                <li><a href="Welcome.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="random_git.html">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
+    <nav class="white-bar"> <marquee>🙏Welcome To The Whole New World With SuchnaSangam🙏</marquee></div>
+    
+            <div class="logo-ss">
+                <img src="ss.png" alt="back-arrow Logo"width="200px" height="200px"/>
+            </div>
+            <a href="git.html">
+                <div class="l">
+                    <a href="s_login.html" class="login-btn">Login</a>
+                </div>
+                
+        </a>
+        <main>    
+<section class="hero">
+    <div class="hero-text">
+        <h1>Bridging the <span class="highlight">Information Gap</span>, <br> Empowering <span class="highlight">Every Community!</span></h1>
+        <p>Suchna Sangam is a web app providing remote communities with news,<br> education, and government updates. 
+           It enables grievance redressal, <br>video calls, secure data management. Designed for digital inclusion, <br>
+           it’s evolving for offline access in low-connectivity areas.</p>
+    </div>
+    <div class="hero-image">
+        <img src="map_png 1.svg" alt="Geographical Map" width="560px" height="559px">
+    </div>
+</section>
+    </main>
+
+    <script>
+        // Automatically log out user on welcome page load
+        window.onload = function () {
+            localStorage.clear(); // Clear stored user data
+            sessionStorage.clear();
+            document.cookie = "JSESSIONID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Clear session cookie
+
+            // Prevent back and forward navigation
+            window.history.pushState(null, null, window.location.href);
+            window.onpopstate = function () {
+                window.history.pushState(null, null, window.location.href);
+            };
+        };
+    </script>
+</body>
+</html>

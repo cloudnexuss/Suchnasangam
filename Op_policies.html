@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchnasangam - Grievance</title>
+    <link rel="stylesheet" href="Op_grievance.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <div class="logo-ss">
+                <img src="logow.png" alt="Suchnasangam Logo" width="200" height="200"/>
+            </div>
+            <ul>
+                <li><a href="op_home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="op_git.html">Contact Us</a></li>
+            </ul>
+            <div class="right-user">
+                <div class="right-pic">
+                    <i class="fa fa-user-circle"></i>
+                </div>
+              
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <span class="title">POLICIES</span>
+        </div>
+        <div class="box history-section">
+            
+            <div class="grievance-list"></div>
+        </div>
+    </main>
+
+
+
+
+
+
+
+
+    
+    <script>
+        const API_BASE = "http://13.202.187.157:8080";
+const bureaucratId = localStorage.getItem("uid");
+
+if (!bureaucratId) {
+    alert("Bureaucrat details missing. Please log in again.");
+    window.location.href = "s_login.html";
+} else {
+    getUserDetails(bureaucratId);
+}
+
+async function getUserDetails(userId) {
+    try {
+        const response = await fetch(`${API_BASE}/users/${userId}`);
+        if (!response.ok) throw new Error("Failed to fetch user details");
+
+        const userData = await response.json();
+        localStorage.setItem("district_id", userData.districtId);
+        const districtId = localStorage.getItem("district_id"); // ✅ Fixed variable declaration
+       
+        loadPolicyHistory(districtId); // ✅ Fixed function name
+    } catch (error) {
+        console.error("Error fetching user details:", error);
+        alert("Failed to load user details. Please log in again.");
+        window.location.href = "s_login.html";
+    }
+}
+
+document.getElementById('grievanceForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const subject = document.getElementById('subject').value;
+    const description = document.getElementById('description').value;
+    const districtId = localStorage.getItem("district_id"); // ✅ Fixed missing variable
+
+    if (!districtId) {
+        alert("District details missing. Please refresh the page.");
+        return;
+    }
+
+    const PolicyData = {
+        subject,
+        description,
+        bureaucratId,
+        districtId,
+        published_on: new Date().toISOString().split('T')[0]
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}/policies/${districtId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(PolicyData)
+        });
+
+        if (response.ok) {
+            alert("Policy submitted successfully!");
+            loadPolicyHistory(districtId); // ✅ Function call is correct
+        } else {
+            alert("Failed to submit Policy.");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
+
+
+async function loadPolicyHistory(districtId) {
+    try {
+        const response = await fetch(`${API_BASE}/policies/${districtId}/history`);
+        if (!response.ok) {
+            document.querySelector(".grievance-list").innerHTML = "<p>No policy found.</p>";
+            return;
+        }
+
+        const policies = await response.json();
+        const policyList = document.querySelector(".grievance-list");
+        policyList.innerHTML = "";
+
+        policies.forEach(p => {
+            const item = document.createElement("div");
+            item.classList.add("grievance-item");
+            item.innerHTML = `
+                <div class="policy-content">
+                    <h3 class="policy-subject">${p.subject}</h3>
+                    <p class="policy-desc">${p.description}</p>
+                </div>
+                <button class="published-date" disabled>${p.publishedOn}</button> 
+            `;
+            policyList.appendChild(item);
+        });
+    } catch (error) {
+        console.error("Error loading policies history:", error);
+    }
+}
+
+    </script>
+</body>
+</html>

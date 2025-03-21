@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchna Sangam</title>
+    <link rel="stylesheet" href="education.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <ul>
+                <li><a href="op_home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="op_git.html">Contact Us</a></li>
+            </ul>
+            <div class="right-user">
+                <div class="right-pic">
+                    <i class="fa fa-user-circle" aria-hidden="true"></i>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="logo-ss">
+                <img src="logow.png" alt="Logo" width="200px" height="200px"/>
+            </div>
+            <div class="container">
+                <span class="title">EDUCATION</span>
+
+                <!-- Class Dropdown -->
+                <div class="dropdown" id="classDropdown" >
+                    <div class="dropdown-header">Select Class</div>
+                    <div class="dropdown-list" id="classList">
+                            <!-- Subjects will be dynamically added here -->
+                    </div>
+                </div>
+
+                <!-- Subject Dropdown (Initially Hidden) -->
+                <div class="dropdown" id="subjectDropdown" style="display: none;">
+                    <div class="dropdown-header">Select Subject</div>
+                    <div class="dropdown-list" id="subjectList">
+                        <!-- Subjects will be dynamically added here -->
+                    </div>
+                </div>
+
+                <!-- Topic Dropdown (Initially Hidden) -->
+                <div class="dropdown" id="topicDropdown" style="display: none;">
+                    <div class="dropdown-header">Select Topic</div>
+                    <div class="dropdown-list" id="topicList">
+                        <!-- Topics will be dynamically added here -->
+                    </div>
+                </div>
+
+                <!-- Video Box -->
+                <div class="video-box">
+                    <iframe id="videoFrame" width="840" height="473" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+const API_BASE = "http://13.202.187.157:8080";
+        const operatorId = localStorage.getItem("uid");
+
+        
+            fetchOperatorDetails(operatorId);
+        
+
+
+
+async function fetchOperatorDetails(operatorId) {
+    try {
+        // Replace with your actual API endpoint
+        const response = await fetch(`${API_BASE}/users/${operatorId}`);
+        if (!response.ok) {
+            throw new Error("Failed to fetch operator details");
+        }
+        
+        const operatorData = await response.json();
+         // Assuming API returns { name: "John Doe" }
+
+        // Update the user-des p element
+        } catch (error) {
+        console.error("Error fetching operator details:", error);
+    }
+}
+        const videoData = {
+    class1: {
+        Maths: {
+            Numbers: "https://www.youtube.com/embed/jrr-8adGS88",
+            Addition: "https://www.youtube.com/embed/cgevFXh7Ivo",
+            Subtraction: "https://www.youtube.com/embed/JSbMVto7QgM",
+            Shapes: "https://www.youtube.com/embed/NhHaV4HDgOg&t=2s",
+            Patterns: "https://www.youtube.com/embed/2Z5u2mbi9GY"
+        },
+        English: {
+            Alphabets: "https://www.youtube.com/embed/C7oebqj3PCY",
+            Simple_Words: "https://www.youtube.com/embed/QXYW-NgP8EA",
+            Sentence_Formation: "https://www.youtube.com/embed/AG3ZaM-2pcs"
+        },
+        EVS: {
+            My_Family: "https://www.youtube.com/embed/0_NPW2zybfU",
+            My_School: "https://www.youtube.com/embed/sWRDYAJHAoY",
+            Animals: "https://www.youtube.com/embed/39G0wYrE2Vc",
+            Plants: "https://www.youtube.com/embed/FQWkdpmBgIY"
+        }
+    },
+    class2: {
+        Maths: {
+            Multiplication: "https://www.youtube.com/embed/IIpy29sAoxA",
+            Division: "https://www.youtube.com/embed/2muobEZUalE",
+            Time_and_Calendar: "https://www.youtube.com/embed/VKWEj6UqwvQ"
+        },
+        English: {
+            Nouns: "https://www.youtube.com/embed/9M6TIb-GnD4",
+            Pronouns: "https://www.youtube.com/embed/qKajLH41dA0",
+            Verbs: "https://www.youtube.com/embed/kQEbJoygDQ",
+            Reading_Comprehension: "https://www.youtube.com/embed/I_skq1F1ugI"
+        },
+        EVS: {
+            Water: "https://www.youtube.com/embed/qkIEjgynmYY",
+            Air: "https://www.youtube.com/embed/h7rhOM2dXtE",
+            Our_Earth: "https://www.youtube.com/embed/d1myYD1cWAw",
+            Food_and_Nutrition: "https://www.youtube.com/embed/XgYW_eEBT2E"
+        }
+    },
+    class3: {
+        Maths: {
+            Fractions: "https://www.youtube.com/embed/2yvueVPeBP4",
+            Measurement: "https://www.youtube.com/embed/GGliZ8tGLMg",
+            Data_Handling: "https://www.youtube.com/embed/WEiwsAWmBp4"
+        },
+        English: {
+            Tenses: "https://www.youtube.com/embed/NkuzcXPpPSA",
+            Paragraph_Writing: "https://www.youtube.com/embed/iHe0QSka8wU",
+            Story_Writing: "https://www.youtube.com/embed/pIV09dMX9Fw"
+        },
+        Science: {
+            Living_NonLiving_Things: "https://www.youtube.com/embed/saL8acHZJ8Q",
+            Human_Body: "https://www.youtube.com/embed/AHQGNb0zBgg",
+            Weather_Seasons: "https://www.youtube.com/embed/VgN2bLcEz0c"
+        },
+        SST: {
+            Maps: "https://www.youtube.com/embed/mtsx8V3mE8o",
+            Transport: "https://www.youtube.com/embed/xcITCrAUNRM",
+            Community_Helpers: "https://www.youtube.com/embed/NEG5NnLqlno"
+        }
+    },
+    class4: {
+        Maths: {
+            Decimals: "https://www.youtube.com/embed/9frz4ODJUc0",
+            Geometry: "https://www.youtube.com/embed/FixHruH090Q",
+            Symmetry: "https://www.youtube.com/embed/_Xs56r9o3Tw"
+        },
+        English: {
+            Articles: "https://www.youtube.com/embed/4iKjfjNvbJw",
+            Prepositions: "https://www.youtube.com/embed/eSDuxQjwUPM",
+            Composition_Writing: "https://www.youtube.com/embed/RFwui6V32nc"
+        },
+        Science: {
+            Energy: "https://www.youtube.com/embed/FZKgqkYiRB4",
+            Adaptation_in_Animals: "https://www.youtube.com/embed/KPvzOMREaYk",
+            Food_Chains: "https://www.youtube.com/embed/0DL4AUBe3WA"
+        },
+        SST: {
+            Indian_States: "https://www.youtube.com/embed/2_BoIIkk2jY",
+            Climate: "https://www.youtube.com/embed/iaVClB4wsjU",
+            Historical_Monuments: "https://www.youtube.com/embed/FQ1z1397TbY"
+        }
+    },
+    class5: {
+        Maths: {
+            Percentages: "https://www.youtube.com/embed/XGOMLR_4zD4",
+            Profit_and_Loss: "https://www.youtube.com/embed/tHF2bXCQ3y4",
+            Averages: "https://www.youtube.com/embed/0wcUGKjMHss"
+        },
+        English: {
+            Direct_Indirect_Speech: "https://www.youtube.com/embed/gvFTbru2Zvg",
+            Letter_Writing: "https://www.youtube.com/embed/W3KI2rJm-Sc"
+        },
+        Science: {
+            Simple_Machines: "https://www.youtube.com/embed/LSfNYpCprw4",
+            Human_Circulatory_System: "https://www.youtube.com/embed/rnIUFrx0DjI"
+        },
+        SST: {
+            Indian_Independence: "https://www.youtube.com/embed/cPjRaw8CVr8",
+            Indian_Constitution: "https://www.youtube.com/embed/GHW0YJZAHwM"
+        }
+    },
+    class6: {
+        Maths: {
+            Integers: "https://www.youtube.com/embed/umrmZRSx2cc",
+            Algebra: "https://www.youtube.com/embed/m0TtI2H5qpA",
+            Probability: "https://www.youtube.com/embed/lZSL7Tm5ViA"
+        },
+        English: {
+            Active_Passive_Voice: "https://www.youtube.com/embed/9dnkxGCU4MM",
+            Comprehension: "https://www.youtube.com/embed/YQCFejkYOVw"
+        },
+        Science: {
+            Electricity_Magnetism: "https://www.youtube.com/embed/bBKYZFtcWHc",
+            Photosynthesis: "https://www.youtube.com/embed/UTZiHlee76g"
+        },
+        SST: {
+            Ancient_Civilizations: "https://www.youtube.com/embed/iQenKwnMHb8",
+            Geography_Basics: "https://www.youtube.com/embed/cwUuVdF8ohY"
+        }
+    },
+    class7: {
+        Maths: {
+            Algebraic_Expressions: "https://www.youtube.com/embed/xFP41SGNaXA",
+            Geometry: "https://www.youtube.com/embed/tmOsBLy6MYE"
+        },
+        English: {
+            Figures_of_Speech: "https://www.youtube.com/embed/iqge2DNtmc0",
+            Essay_Writing: "https://www.youtube.com/embed/yltyRufw9Sk&t=581s"
+        },
+        Science: {
+            Human_Digestive_System: "https://www.youtube.com/embed/kG7VMHc3Ptc",
+            Heat_Temperature: "https://www.youtube.com/embed/JShQ30q3sIU"
+        }
+    },
+    class8: {
+        Maths: {
+            Linear_Equations: "https://www.youtube.com/embed/PL5yiS3c1AIyXM9je_9GOCW9QDIZOkD6OQ",
+            Coordinate_Geometry: "https://www.youtube.com/embed/KFsfyg0t70s"
+        },
+        English: {
+            Idioms_Phrases: "https://www.youtube.com/embed/mPe8nzeB_Kk",
+            Debating_Skills: "https://www.youtube.com/embed/1TSkkxu8on0"
+        },
+        Science: {
+            Chemical_Reactions: "https://www.youtube.com/embed/WWJQpuv9ElE",
+            Force_Motion: "https://www.youtube.com/embed/IJWEtCRWGvI"
+        }
+    },
+    class9: {
+        Maths: {
+            Polynomials: "https://www.youtube.com/embed/4VHrvMutJQw",
+            Probability: "https://www.youtube.com/embed/lZSL7Tm5ViA&t=35s",
+            Trigonometry: "https://www.youtube.com/embed/kJckEfaEtFQ"
+        },
+        English: {
+            Novel_Reading: "https://www.youtube.com/embed/A30OuLLUa-g",
+            Literary_Devices: "https://www.youtube.com/embed/1ZeesPwl8-s"
+        },
+        Physics: {
+            Laws_of_Motion: "https://www.youtube.com/embed/mjQyp6CFbVA",
+            Gravitation: "https://www.youtube.com/embed/yeFQ2Ce_nKo"
+        }
+    },
+    class10: {
+        Maths: {
+            Quadratic_Equations: "https://www.youtube.com/embed/AYSIR_ACReA",
+            Coordinate_Geometry: "https://www.youtube.com/embed/TmvcTktQPDo"
+        },
+        English: {
+            Report_Writing: "https://www.youtube.com/embed/51cOaPh7FN4",
+            Speech_Writing: "https://www.youtube.com/embed/6jnbiukoKVo"
+        },
+        Physics: {
+            Electricity: "https://www.youtube.com/embed/UI8nM-dSfh4",
+            Magnetism: "https://www.youtube.com/embed/D5rouymJ_UA"
+        },
+        Chemistry: {
+            Periodic_Table: "https://www.youtube.com/embed/1jJ9GqSqQEU",
+            Carbon_Compounds: "https://www.youtube.com/embed/Ff0t3zTzgR8"
+        },
+        Biology: {
+            Genetics: "https://www.youtube.com/embed/PeoNpqD73aU",
+            Evolution: "https://www.youtube.com/embed/1bO8S-jlAYc"
+        }
+    }
+};
+function toggleDropdown(id) {
+    const dropdown = document.getElementById(id);
+    
+    // Show alert if Class or Subject is clicked after selection
+    if (dropdown.classList.contains("disabled") && id !== "topicDropdown") {
+        alert("Please reload the page to change this selection.");
+        return;
+    }
+
+    dropdown.classList.toggle("active");
+}
+
+
+// Close dropdowns when clicking outside
+document.addEventListener("click", function(event) {
+    ["classDropdown", "subjectDropdown", "topicDropdown"].forEach(id => {
+        const dropdown = document.getElementById(id);
+        if (dropdown && !dropdown.contains(event.target)) {
+            dropdown.classList.remove("active");
+        }
+    });
+});
+
+// ✅ Handle Class Selection
+document.querySelector("#classDropdown .dropdown-header").addEventListener("click", function () {
+    toggleDropdown("classDropdown");
+});
+
+document.querySelectorAll('#classDropdown .dropdown-item input').forEach(input => {
+    input.addEventListener("change", function() {
+        const selectedClass = this.value;
+        document.querySelector('#classDropdown .dropdown-header').textContent = this.parentElement.textContent.trim();
+        document.getElementById("classDropdown").classList.remove("active");
+        document.getElementById("classDropdown").classList.add("disabled"); // Disable class selection after selection
+
+        // ✅ Reset Subject & Topic properly
+        resetDropdown("subjectDropdown", "Select Subject");
+        resetDropdown("topicDropdown", "Select Topic");
+        document.getElementById("videoFrame").src = "";
+
+        // ✅ Populate new subjects
+        document.getElementById("subjectDropdown").style.display = "block";
+        const subjectList = document.getElementById("subjectList");
+        subjectList.innerHTML = "";
+
+        Object.keys(videoData[selectedClass]).forEach(subject => {
+            const label = document.createElement("label");
+            label.classList.add("dropdown-item");
+            label.innerHTML = `<span>${subject}</span>
+                               <input type="radio" name="subject" value="${subject}">`;
+            subjectList.appendChild(label);
+        });
+
+        // ✅ Attach event listeners for newly created subject options
+        attachSubjectListeners(selectedClass);
+    });
+});
+
+// ✅ Function to Handle Subject Selection
+function attachSubjectListeners(selectedClass) {
+    document.querySelector("#subjectDropdown .dropdown-header").addEventListener("click", function () {
+        toggleDropdown("subjectDropdown");
+    });
+
+    document.querySelectorAll('#subjectDropdown .dropdown-item input').forEach(subjectInput => {
+        subjectInput.addEventListener("change", function() {
+            const selectedSubject = this.value;
+            document.querySelector('#subjectDropdown .dropdown-header').textContent = this.parentElement.textContent.trim();
+            document.getElementById("subjectDropdown").classList.remove("active");
+            document.getElementById("subjectDropdown").classList.add("disabled"); // Disable subject selection after selection
+
+            // ✅ Reset Topic dropdown correctly
+            resetDropdown("topicDropdown", "Select Topic");
+            document.getElementById("videoFrame").src = "";
+
+            // ✅ Populate new topics dynamically
+            const topicDropdown = document.getElementById("topicDropdown");
+            topicDropdown.style.display = "block";
+            const topicList = document.getElementById("topicList");
+            topicList.innerHTML = "";  // Ensure previous topics are removed
+
+            Object.entries(videoData[selectedClass][selectedSubject]).forEach(([topic, url]) => {
+                const label = document.createElement("label");
+                label.classList.add("dropdown-item");
+                label.innerHTML = `<span>${topic}</span>
+                                   <input type="radio" name="topic" value="${url}">`;
+                topicList.appendChild(label);
+            });
+
+            // ✅ Attach event listeners for newly created topic options
+            attachTopicListeners();
+        });
+    });
+}
+
+// ✅ Function to Handle Topic Selection
+function attachTopicListeners() {
+    document.querySelector("#topicDropdown .dropdown-header").addEventListener("click", function () {
+        toggleDropdown("topicDropdown");
+    });
+
+    document.querySelectorAll('#topicDropdown .dropdown-item input').forEach(topicInput => {
+        topicInput.addEventListener("change", function() {
+            document.querySelector('#topicDropdown .dropdown-header').textContent = this.parentElement.textContent.trim();
+            document.getElementById("topicDropdown").classList.remove("active");
+
+            // ✅ Play the selected video
+            document.getElementById("videoFrame").src = this.value;
+            document.getElementById("videoFrame").style.display = "block";
+        });
+    });
+}
+
+// ✅ Helper function to reset dropdowns correctly
+function resetDropdown(dropdownId, defaultText) {
+    document.getElementById(dropdownId).style.display = "none";
+    document.getElementById(dropdownId).querySelector(".dropdown-header").textContent = defaultText;
+    document.getElementById(dropdownId).querySelector(".dropdown-list").innerHTML = "";
+    if (dropdownId !== "topicDropdown") {
+        document.getElementById(dropdownId).classList.remove("disabled"); // Reset disabled state (except for topics)
+    }
+}
+function populateClassDropdown() {
+    const classDropdownList = document.querySelector("#classDropdown .dropdown-list");
+    classDropdownList.innerHTML = ""; // Clear existing options
+
+    // Loop through the keys in videoData to create class options
+    Object.keys(videoData).forEach(className => {
+        const label = document.createElement("label");
+        label.classList.add("dropdown-item");
+        label.innerHTML = `<span>${className}</span>
+                           <input type="radio" name="class" value="${className}">`;
+        classDropdownList.appendChild(label);
+    });
+
+    // Attach event listeners to the newly created class options
+    attachClassListeners();
+}
+
+// Function to attach event listeners to class options
+function attachClassListeners() {
+    document.querySelectorAll('#classDropdown .dropdown-item input').forEach(input => {
+        input.addEventListener("change", function () {
+            const selectedClass = this.value;
+            document.querySelector('#classDropdown .dropdown-header').textContent = this.parentElement.textContent.trim();
+            document.getElementById("classDropdown").classList.remove("active");
+            document.getElementById("classDropdown").classList.add("disabled"); // Disable class selection after selection
+
+            // Reset Subject & Topic properly
+            resetDropdown("subjectDropdown", "Select Subject");
+            resetDropdown("topicDropdown", "Select Topic");
+            document.getElementById("videoFrame").src = "";
+
+            // Populate new subjects
+            document.getElementById("subjectDropdown").style.display = "block";
+            const subjectList = document.getElementById("subjectList");
+            subjectList.innerHTML = "";
+
+            Object.keys(videoData[selectedClass]).forEach(subject => {
+                const label = document.createElement("label");
+                label.classList.add("dropdown-item");
+                label.innerHTML = `<span>${subject}</span>
+                                   <input type="radio" name="subject" value="${subject}">`;
+                subjectList.appendChild(label);
+            });
+
+            // Attach event listeners for newly created subject options
+            attachSubjectListeners(selectedClass);
+        });
+    });
+}
+
+// Call the function to populate the class dropdown
+populateClassDropdown();
+
+    </script>
+</body>
+</html>

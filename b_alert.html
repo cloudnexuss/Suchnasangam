@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchnasangam - Grievance</title>
+    <link rel="stylesheet" href="Op_grievance.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <div class="logo-ss">
+                <img src="logow.png" alt="Suchnasangam Logo" width="200" height="200"/>
+            </div>
+            <ul>
+                <li><a href="b_home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="b_git.html">Contact Us</a></li>
+            </ul>
+            <div class="right-user">
+                <div class="right-pic">
+                    <i class="fa fa-user-circle"></i>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <span class="title">ALERTS</span>
+        </div>
+        <div class="box">
+            <form class="grievance-form" id="grievanceForm">
+                <div class="form-group">
+                    <label for="description">Message</label>
+                    <textarea id="description" name="description" placeholder="Just write the alert you want to notify" rows="5" required></textarea>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        <span class="title">History Of Alerts</span>
+        <div class="box history-section">
+            
+            <div class="grievance-list"></div>
+        </div>
+    </main>
+
+
+
+<script>
+
+
+
+const API_BASE = "http://13.202.187.157:8080";
+
+// Fetch Bureaucrat Details & District ID
+async function fetchBureaucratDetails() {
+    try {
+        const bureaucratId = localStorage.getItem("uid");
+        if (!bureaucratId) throw new Error("❌ Bureaucrat UID not found in localStorage");
+
+        console.log("ℹ️ Fetching bureaucrat details for UID:", bureaucratId);
+
+        const response = await fetch(`${API_BASE}/users/${bureaucratId}`);
+        if (!response.ok) throw new Error(`❌ Failed to fetch bureaucrat details. Status: ${response.status}`);
+
+        const bureaucratData = await response.json();
+        console.log("✅ Bureaucrat Data:", bureaucratData);
+
+        const districtId = bureaucratData.districtId;
+        if (!districtId) throw new Error("❌ District ID missing from bureaucrat details");
+
+        localStorage.setItem("district_id", districtId);
+        localStorage.setItem("district_name", districtId);
+
+
+        console.log("ℹ️ Stored District ID:", districtId);
+        return districtId;
+    } catch (error) {
+        console.error("⚠️ Error fetching bureaucrat details:", error);
+    }
+}
+
+// Fetch Operator IDs for the District
+async function fetchOperators(districtId) {
+    try {
+        console.log("ℹ️ Fetching operator IDs for district:", districtId);
+
+        const response = await fetch(`${API_BASE}/users/operator-ids/${districtId}`);
+        if (!response.ok) throw new Error(`❌ Failed to fetch operators. Status: ${response.status}`);
+
+        const operators = await response.json();
+        console.log("✅ Fetched Operators:", operators);
+
+        return Array.isArray(operators) ? operators : [];
+    } catch (error) {
+        console.error("⚠️ Error fetching operators:", error);
+        return [];
+    }
+}
+
+// Submit New Alert
+async function submitAlert(event) {
+    event.preventDefault();
+    
+    const message = document.getElementById("description").value.trim();
+    if (!message) {
+        alert("⚠️ Please enter a message");
+        return;
+    }
+    
+    const districtId = localStorage.getItem("district_id"); // Keep using districtId for other endpoints
+    const districtName = localStorage.getItem("district_name"); // Use districtName ONLY for alert submission
+    
+    if (!districtId) {
+        alert("❌ District ID not found. Please refresh the page.");
+        return;
+    }
+    if (!districtName) {
+        alert("❌ District Name not found. Please refresh the page.");
+        return;
+    }
+
+    console.log("ℹ️ Submitting alert...");
+    console.log("📍 Using districtId for fetching operators:", districtId);
+    console.log("📍 Using districtName for alert submission:", districtName);
+
+    const operatorIds = await fetchOperators(districtId); // ✅ Fetch operators using districtId
+    if (!Array.isArray(operatorIds) || operatorIds.length === 0) {
+        alert("❌ No operators found for this district.");
+        return;
+    }
+
+    const alertData = { message, districtName, operatorIds }; // ✅ Send districtName to backend
+    console.log("📤 Sending Alert Data:", JSON.stringify(alertData, null, 2));
+
+    try {
+        const response = await fetch(`${API_BASE}/api/alerts/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(alertData)
+        });
+
+        console.log("📩 Raw Response Status:", response.status);
+
+        const responseText = await response.text(); // Get response as text
+        console.log("📩 Raw Response Text:", responseText);
+
+        if (!response.ok) {
+            throw new Error(`❌ Failed to submit alert. Status: ${response.status}, Response: ${responseText}`);
+        }
+
+        // Try to parse as JSON only if it's valid JSON
+        let responseData;
+        try {
+            responseData = JSON.parse(responseText);
+            console.log("✅ Parsed JSON Response:", responseData);
+        } catch (jsonError) {
+            console.warn("⚠️ Response is not JSON, treating as text:", responseText);
+            responseData = { message: responseText };
+        }
+
+        alert(`🎉 ${responseData.message || "Alert submitted successfully!"}`);
+        document.getElementById("grievanceForm").reset();
+        fetchAlertHistory(districtId); // ✅ Fetch alert history using districtId
+
+    } catch (error) {
+        console.error("⚠️ Error submitting alert:", error);
+        alert("❌ Error submitting alert. Check the console for details.");
+    }
+}
+
+
+// Fetch Alert History
+async function fetchAlertHistory(districtId) {
+    try {
+        console.log("ℹ️ Fetching alert history for district:", districtId);
+
+        const response = await fetch(`${API_BASE}/api/alerts/${districtId}`);
+        if (!response.ok) throw new Error(`❌ Failed to fetch alert history. Status: ${response.status}`);
+
+        const alerts = await response.json();
+        console.log("✅ Fetched Alert History:", alerts);
+
+        const historyContainer = document.querySelector(".grievance-list");
+        historyContainer.innerHTML = "";
+
+        alerts.forEach(alert => {
+            const alertElement = document.createElement("div");
+            alertElement.classList.add("grievance-item");
+            alertElement.innerHTML = `
+                <h3 class="grievance-subject"> ${alert.message}</h3>
+                <button class="published-date" disabled> ${alert.publishedOn}</button>
+            `;
+            historyContainer.appendChild(alertElement);
+        });
+    } catch (error) {
+        console.error("⚠️ Error fetching alert history:", error);
+    }
+}
+
+// Initialize Page on Load
+window.onload = async function () {
+    const bureaucratId = localStorage.getItem("uid");
+    console.log("ℹ️ Bureaucrat UID from localStorage:", bureaucratId);
+
+    const districtId = await fetchBureaucratDetails();
+    if (districtId) {
+        fetchAlertHistory(districtId);
+    }
+};
+
+// Attach Form Submit Event Listener
+document.getElementById("grievanceForm").addEventListener("submit", submitAlert);
+
+</script>
+
+
+
+
+    
+</body>
+</html>

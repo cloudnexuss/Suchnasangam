@@ -1,0 +1,239 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right, #003465, #0085ff, #003465);
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.left-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-section img {
+    width: 90%;
+    height: auto;
+}
+
+.right-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 600px;
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.logo {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: -20px;
+}
+
+.logo img {
+    max-width: 150px;
+    height: auto;
+}
+
+.prof_icon {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    width: 120px;
+    height: 60px;
+}
+
+.prof_icon img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    margin-top: -20px;
+}
+
+.login-title {
+    font-size: 32px;
+    color: #000000;
+    margin-bottom: -10px;
+    text-align: center;
+}
+
+.login-box label {
+    display: block;
+    text-align: left;
+    margin: 10px 0;
+    color: #000000;
+}
+
+.login-box input {
+    width: 90%;
+    padding: 10px 5px;
+    border: 1px solid #ccc;
+    border-radius: 80px;
+}
+
+.forgot-password {
+    display: block;
+    text-align: right;
+    margin: 10px 0;
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* Style for the sign-up button */
+.login-box button {
+    background: #11abbf;
+    color: #fff;
+    padding: 10px 50px; /* Increased padding for better appearance */
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 18px; /* Ensuring visibility */
+    font-weight: bold;
+    display: block; /* Ensures it appears in the flow */
+    width: 50%; /* Makes it fit properly */
+    margin-top: 15px; /* Adds spacing from fields */
+    margin-left: 85px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect for better UI */
+.login-box button:hover {
+    background: #0056b3;
+    box-shadow: 0 0 8px rgba(0, 86, 179, 0.5);
+}
+
+/* Ensure button is above other elements */
+.login-box button:active {
+    transform: scale(0.98);
+}
+
+/* Fix for missing z-index if needed */
+.login-box {
+    position: relative;
+    z-index: 10;
+}
+
+
+.login-box p a {
+    color: #ff4500;
+    text-decoration: none;
+}
+
+/* Styling the dropdown */
+#district {
+    width: 90%;
+    padding: 10px;
+    border-radius: 80px;  /* Rounded edges */
+    border: 1px solid #ccc;
+    background: #ffffff;
+    font-size: 16px;
+    color: #555;
+    outline: none;
+    appearance: none; /* Removes default dropdown arrow in some browsers */
+    cursor: pointer;
+    text-align: left;
+    padding-left: 15px;
+}
+
+/* Customizing the dropdown arrow */
+#district::-ms-expand {
+    display: none; /* Hides default arrow in IE/Edge */
+}
+
+#district:hover {
+    border: 3px solid #00a3a1; /* Darker border on focus */
+    box-shadow: 0 0 8px rgba(0, 199, 190, 0.5);
+}
+#district option {
+    font-size: 16px; /* Same size as input fields */
+    color: #888; /* Light gray like input placeholders */
+}
+#Role {
+    width: 90%;
+    padding: 10px;
+    border-radius: 80px;  /* Rounded edges */
+    border: 1px solid #ccc;
+    background: #ffffff;
+    font-size: 16px;
+    color: #555;
+    outline: none;
+    appearance: none; /* Removes default dropdown arrow in some browsers */
+    cursor: pointer;
+    text-align: left;
+    padding-left: 15px;
+}
+
+/* Customizing the dropdown arrow */
+#Role::-ms-expand {
+    display: none; /* Hides default arrow in IE/Edge */
+}
+
+#Role:hover {
+    border: 3px solid #00a3a1; /* Darker border on focus */
+    box-shadow: 0 0 8px rgba(0, 199, 190, 0.5);
+}
+#Role option {
+    font-size: 16px; /* Same size as input fields */
+    color: #888; /* Light gray like input placeholders */
+}
+
+/* Input box styling */
+.login-box input {
+    width: 90%;
+    padding: 10px 5px;
+    border: 1px solid #ccc;
+    border-radius: 80px;
+    outline: none;
+    transition: border-color 0.1s ease;
+}
+
+/* Change border color on focus */
+.login-box input:focus {
+    border: 2px solid #00c7be;
+    box-shadow: 0 0 5px rgba(0, 199, 190, 0.5);
+}
+
+/* Style adjustments for better visibility */
+.login-box input::placeholder {
+    color: #888;
+}
+
+/* Button hover effect for consistency */
+.login-box button:hover {
+    border: 3px solid #00a3a1; /* Darker border on focus */
+    box-shadow: 0 0 8px rgba(0, 199, 190, 0.5);
+}
+.login-box::-ms-expand {
+    display: none; /* Hides default arrow in IE/Edge */
+}

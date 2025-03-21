@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password - Suchna Sangam</title>
+    <link rel="stylesheet" href="reset.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <img src="rboy.svg" alt="Boy with laptop">
+            <div class="tshirt-text">Suchna <br>Sangam</div>
+        </div>
+        
+        <div class="right-section">
+            <div class="login-box">
+                <div class="logo">
+                    <img src="logo.svg" alt="Suchna Sangam Logo">
+                </div>
+                <div class="prof_icon">
+                    <img src="Male User.svg" alt="Icon">
+                </div>
+                
+                <h1 class="login-title">Reset Password</h1>
+                
+                <form id="resetForm">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" placeholder="username or email" required>
+
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" placeholder="New Password" required>
+
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+
+                    <button type="submit">Confirm</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("resetForm");
+            const usernameInput = document.getElementById("username");
+            const passwordInput = document.getElementById("newPassword"); // Fixed ID
+            const confirmPasswordInput = document.getElementById("confirmPassword"); // Fixed ID
+
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+                const confirmPassword = confirmPasswordInput.value.trim();
+
+                // Validate username/email input
+                if (username === "") {
+                    alert("Please enter your username or email.");
+                    return;
+                }
+
+                // Validate password match
+                if (password !== confirmPassword) {
+                    alert("Password did not match!");
+                    return;
+                }
+
+                // Make API call to update password
+                resetPassword(username, password);
+            });
+
+            function resetPassword(email, newPassword) {
+                fetch("http://13.202.187.157:8080/users/reset-password", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, newPassword }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Password reset successful! Redirecting to login...");
+                        window.location.href = "s_login.html"; // Redirect after success
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Something went wrong. Please try again.");
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

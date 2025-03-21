@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchnasangam</title>
+    <link rel="stylesheet" href="op_home.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <ul>
+                <li><a href="op_home.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="op_git.html">Contact Us</a></li>
+            </ul>
+            <div class="right-user">
+                <div class="right-pic">
+                    <i class="fa fa-user-circle" aria-hidden="true"></i>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="all-content">
+            <div class="hero">
+                <div class="content">
+                    <h1>HERE YOU GET THE FASTEST NOTIFICATIONS</h1>
+                    <p>You will get details and connections between the public & officials & helps them.</p>
+                    <div class="buttons">
+                        <a href="education.html"> <button class="box1">EDUCATIONAL</button></a>
+                        <a href="op_news.html"><button class="box2">NEWS AND CURRENT AFFAIRS</button></a>
+                        <button class="box3">NEAREST SERVICES AVAILABLE</button>
+                        <a href="Op_policies.html"><button id="box4">POLICIES</button></a>
+                        <a href="Op_grievance.html"><button class="box5">GRIEVANCE</button></a>
+                        <a href="op_vdo.html"><button id="box6">VIDEO CONFERENCING</button></a>
+                    </div>
+                </div>
+                <div class="logo-section">
+                    <img src="Apple.png" alt="Suchna Sangam Logo" width="-100px" height="445"/>
+                </div>
+            </div>
+            <!-- ALERT NOTIFICATION -->
+            <div class="alert-notification">
+                <div class="bell-icon">
+                    <img src="Vector.png" alt="Bell Icon" id="bell-img">
+                </div>
+                <span>ALERT NOTIFICATION</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Dropdown for Logout -->
+    <div class="dropdown-menu" id="profileDropdown">
+        <a href="#" onclick="logoutUser()">Logout</a>
+    </div>
+
+    <script>
+        const API_BASE = "http://13.202.187.157:8080";
+        const operatorId = localStorage.getItem("uid");
+    
+        if (!operatorId) {
+            alert("User details missing. Please log in again.");
+            window.location.href = "s_login.html";
+        } else {
+            getUserDetails(operatorId);
+        }
+    
+        async function getUserDetails(userId) {
+            try {
+                const response = await fetch(`${API_BASE}/users/${userId}`);
+                if (!response.ok) throw new Error("Failed to fetch user details");
+    
+                const userData = await response.json();
+                localStorage.setItem("district_id", userData.districtId);
+                
+                checkUnseenAlerts(userData.districtId, userId);
+            } catch (error) {
+                console.error("Error fetching user details:", error);
+                alert("Failed to load user details. Please log in again.");
+                window.location.href = "s_login.html";
+            }
+        }
+    
+        async function checkUnseenAlerts(districtId, operatorId) {
+            try {
+                const response = await fetch(`${API_BASE}/api/alerts/${districtId}/unseen/${operatorId}`);
+                if (!response.ok) throw new Error("Failed to fetch alerts");
+    
+                const hasUnseenAlerts = await response.json();
+                console.log("API Response for unseen alerts:", hasUnseenAlerts); // Debugging
+    
+                const alertNotification = document.querySelector(".bell-icon");
+    
+                if (hasUnseenAlerts) {
+                    alertNotification.classList.add("ringing-bell");
+                    console.log("Added shake-animation class ✅");
+                } else {
+                    alertNotification.classList.remove("ringing-bell");
+                    console.log("Removed shake-animation class ❌");
+                }
+            } catch (error) {
+                console.error("Error checking alerts:", error);
+            }
+        }
+    
+        // Toggle dropdown on click
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            var dropdown = document.getElementById("profileDropdown");
+            dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+        }
+    
+        // Close dropdown when clicking outside
+        window.onclick = function () {
+            document.getElementById("profileDropdown").style.display = "none";
+        };
+    
+        document.querySelector(".alert-notification").addEventListener("click", function () {
+            window.location.href = "op_alert.html";
+        });
+    
+        // Attach event listeners
+        document.querySelector(".right-pic").addEventListener("click", toggleDropdown);
+        document.querySelector(".user-des p").addEventListener("click", toggleDropdown);
+    
+         // 🔹 Logout Function
+        // 🔹 Logout Function (Prevents back & forward navigation)
+async function logoutUser() {
+    try {
+        const response = await fetch(`${API_BASE}/users/logout`, {
+            method: "POST",
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            console.log("Logout successful");
+
+            // Clear session storage
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect and clear history
+            window.location.replace("s_login.html");
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 100);
+        } else {
+            console.error("Logout failed");
+            alert("Logout failed. Please try again.");
+        }
+    } catch (error) {
+        console.error("Error during logout:", error);
+        alert("Logout failed. Please check your network.");
+    }
+}
+
+// 🔹 Prevent both Back and Forward Navigation
+function disableNavigation() {
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+        window.history.pushState(null, "", window.location.href);
+        logoutUser(); // Logout user on back navigation
+    };
+}
+
+// 🔹 Function to Redirect to Login Page
+function redirectToLogin() {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.replace("s_login.html");
+}
+// 🔹 Ensure User Cannot Navigate Forward After Logout
+window.onload = function () {
+    if (!localStorage.getItem("uid")) {
+        redirectToLogin();
+    }
+    
+    disableNavigation();
+
+    // Ensure forward button is disabled
+    setTimeout(() => {
+        history.pushState(null, null, location.href);
+        window.addEventListener("popstate", function () {
+            history.pushState(null, null, location.href);
+        });
+    }, 0);
+};
+    </script>
+    
+</body>
+</html>

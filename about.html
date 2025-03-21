@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchnasangam</title>
+    <link rel="stylesheet" href="about.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="upper-section">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="#">Team</a></li>
+                <li><a href="#">Achievements</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+            <div class="right-user">
+                <div class="right-pic">
+                    <i class="fa fa-user-circle" aria-hidden="true">
+                        
+                    </i>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        
+        <div class="container">
+            <div class="logo-ss">
+                <img src="ss.png" alt="back-arrow Logo"width="200px" height="200px"/>
+            </div>
+            <section class="hero">
+                <div class="hero-text">
+                    <h1>About Suchna Sangam</h1>
+                    <p>Suchna Sangam is an initiative focused on bridging the information gap in regions<br> that have limited or no access to the internet. At its core,
+                        Suchna Sangam believes <br>that information is a transformative tool essential for empowering individuals,<br> fostering growth, and uplifting communities.
+                        By connecting isolated regions with <br>critical resources, Suchna Sangam helps level the playing field for underserved<br> populations, ensuring they have
+                        equal opportunities for development.</p>
+
+
+
+        <h2>What drives Suchna Sangam ?</h2>
+
+        <div class="cards">
+            <div class="card">
+                <div class="icon">
+                    <img src="students.svg" alt="Students">
+                </div>
+                <div class="card-content">
+                    <h3>STUDENTS</h3>
+                    <p1>Access to educational resources that would <br>otherwise be unavailable.</p1>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon">
+                    <img src="citizen.svg" alt="Local Citizens">
+                </div>
+                <div class="card-content">
+                    <h4>LOCAL CITIZENS</h4>
+                    <p2>News updates, avenues for raising grievances,<br> and ways to engage with local authorities.</p2>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon">
+                    <img src="farmer.svg" alt="Farmers and Villagers">
+                </div>
+                <div class="card-content">
+                    <h5>FARMERS AND VILLAGERS</h5>
+                    <p3>Information on government schemes, policies,<br> and agricultural advancements.</p3>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="icon">
+                    <img src="healthcare.svg" alt="Healthcare Seekers">
+                </div>
+                <div class="card-content">
+                    <h6>HEALTHCARE SEEKERS</h6>
+                    <p4>Access to critical health information, preventive<br> care tips, and guidance on local healthcare <br>services.</p4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mission">
+        <h7>Our mission</h7><br>
+    <div class="content">   
+        <p5>At Suchna Sangam, our mission is to connect remote 
+            communities with <br>vital information and services. In our initial phase,
+             we used internet<br> access to deliver news, education, and government updates,<br>
+              empowering individuals and fostering development.<br>
+            <br>
+            As we evolve, we aim to implement innovative offline solutions, 
+            ensuring <br>that even in regions with limited connectivity, people have access to<br> essential tools to learn, grow,
+             and thrive—no matter how <br>isolated their location.</p5>
+    </div>
+    </div>
+
+    <div class="story">
+        <h8>Our story</h8>
+    <div class="content2">
+    
+        <p>
+            Suchna Sangam<br>
+            Suchna Sangam was created to bridge the information gap in remote<br> regions with limited connectivity. 
+            In our first trial, we used internet <br>access to deliver education, news, and government services.
+             The<br> success of this phase reinforced our mission to empower isolated<br> communities.
+            <br>
+            Now, we're focused on transitioning to offline solutions, ensuring access <br>to essential
+             information without internet reliance. Suchna Sangam is a<br> blend of technology and social impact,
+              driving progress where digital <br>access is scarce.</p>
+    </div>
+    <div class="planet">
+        <img src="planet.png" alt="planet Logo"width="510px" height="510px"/>
+    </div>
+    <nav class="white-bar">
+        <div class="nav-logo">
+            <img src="ss.png" alt="ss logo" width="120px" height="120px">
+        </div>
+        <div class="menu">
+            <p>MENU</p>
+            <hr>
+        </div>
+        <div class="last1">
+        <p1>HOME</p1>
+        <P4>ACHIEVEMENTS</P4>
+        </div>
+        <div class="last2">
+        <P2>ABOUT</P2>
+        <P5>CONTACT US</P5>
+        </div>
+        <div class="last3">
+        <P3>TEAM</P3>
+        </div>
+        <div class="hff">
+        <hr>
+        </di>
+        <div class="all">
+            <p8>© suchna sangam 2025-All rights reserved</p8>
+        </div>
+    </div>
+   </section>
+
+        </div>
+    </main>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Target only the first 'Home' link inside <nav>
+            const homeLink = document.querySelector("nav ul li:first-child a[href='#']");
+        
+            homeLink.addEventListener("click", async function (event) {
+                event.preventDefault(); // Prevent default navigation
+        
+                try {
+                    const uid = localStorage.getItem("uid"); // Fetch UID from local storage
+                    if (!uid) {
+                        window.location.href = "Welcome.html";
+                        
+                    }
+        
+                    // API call to fetch user details
+                    const response = await fetch(`http://13.202.187.157:8080/users/${uid}`);
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch user details.");
+                    }
+        
+                    const userData = await response.json();
+                    const userRole = userData.role; // Assuming API returns { role: "operator" } or { role: "bureaucrat" }
+        
+                    // Redirect based on role
+                    if (userRole === "operator") {
+                        window.location.href = "op_home.html";
+                    } else if (userRole === "bureaucrat") {
+                        window.location.href = "b_home.html";
+                    } else {
+                        
+                        window.location.href = "Welcome.html";
+                    }
+                } catch (error) {
+                    console.error("Error fetching user role:", error);
+                    alert("An error occurred. Please try again.");
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            // Target only the first 'Home' link inside <nav>
+            const homeLink = document.querySelector("nav ul li:last-child a[href='#']");
+        
+            homeLink.addEventListener("click", async function (event) {
+                event.preventDefault(); // Prevent default navigation
+        
+                try {
+                    const uid = localStorage.getItem("uid"); // Fetch UID from local storage
+                    if (!uid) {
+                         window.location.href = "random_git.html";
+                        
+                    }
+        
+                    // API call to fetch user details
+                    const response = await fetch(`http://13.202.187.157:8080/users/${uid}`);
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch user details.");
+                    }
+        
+                    const userData = await response.json();
+                    const userRole = userData.role; // Assuming API returns { role: "operator" } or { role: "bureaucrat" }
+        
+                    // Redirect based on role
+                    if (userRole === "operator") {
+                        window.location.href = "op_git.html";
+                    } else if (userRole === "bureaucrat") {
+                        window.location.href = "b_git.html";
+                    } else {
+                        
+                        window.location.href = "random_git.html";
+                    }
+                } catch (error) {
+                    console.error("Error fetching user role:", error);
+                    alert("An error occurred. Please try again.");
+                }
+            });
+        });
+        </script>
+        
+</body>
+</html>
