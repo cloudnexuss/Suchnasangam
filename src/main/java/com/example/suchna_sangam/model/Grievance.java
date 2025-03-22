@@ -15,4 +15,5 @@ public class Grievance {
     private String description;
     private String status; // "pending" or "resolved"
     private long timestamp;
+
 }

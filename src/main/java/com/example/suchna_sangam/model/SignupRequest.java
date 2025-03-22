@@ -5,36 +5,40 @@ public class SignupRequest {
     private String email;
     private String role;
     private String password;
+    private String district;
+    private String circle;
 
-    // Constructor
-    public SignupRequest(String name, String email, String role, String password) {
+    public SignupRequest(String name, String email, String role, String password, String district, String circle) {
         this.name = name;
         this.email = email;
         this.role = role;
         this.password = password;
+        this.district = district;
+        this.circle = circle;
     }
 
-    // Getters and Setters
     public String getName() {
-        return name;
+        return this.name;
     }
 
-
+    public String getDistrict() {
+        return this.district;
+    }
 
     public String getEmail() {
-        return email;
+        return this.email;
     }
-
-
 
     public String getRole() {
-        return role;
+        return this.role;
     }
-
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
+    public String getCircle() {
+        return this.circle;
+    }
 }
 

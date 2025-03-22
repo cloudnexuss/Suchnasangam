@@ -4,11 +4,11 @@ import java.util.List;
 
 public class AlertRequest {
     private String message;
-    private String districtName; // Required to store alert under the district
-    private List<String> operatorIds; // List of operator IDs in that district
+    private String districtName;
+    private List<String> operatorIds;
 
-    // Constructors
-    public AlertRequest() {}
+    public AlertRequest() {
+    }
 
     public AlertRequest(String message, String districtName, List<String> operatorIds) {
         this.message = message;
@@ -16,9 +16,8 @@ public class AlertRequest {
         this.operatorIds = operatorIds;
     }
 
-    // Getters and Setters
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
     public void setMessage(String message) {
@@ -26,7 +25,7 @@ public class AlertRequest {
     }
 
     public String getDistrictName() {
-        return districtName;
+        return this.districtName;
     }
 
     public void setDistrictName(String districtName) {
@@ -34,7 +33,7 @@ public class AlertRequest {
     }
 
     public List<String> getOperatorIds() {
-        return operatorIds;
+        return this.operatorIds;
     }
 
     public void setOperatorIds(List<String> operatorIds) {

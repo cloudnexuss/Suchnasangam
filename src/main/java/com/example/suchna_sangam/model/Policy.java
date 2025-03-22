@@ -19,4 +19,5 @@ public class Policy {
 
     @JsonProperty("publishedOn")  // Ensures JSON mapping
     private String publishedOn;
+
 }

@@ -15,5 +15,6 @@ public class News {
     private String link;
     private String publishedAt;
     private URI image;
+
 }
 

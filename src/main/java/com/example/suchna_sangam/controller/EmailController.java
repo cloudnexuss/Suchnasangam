@@ -10,25 +10,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/email")
+@RequestMapping({"/api/email"})
 public class EmailController {
-
     private final EmailService emailService;
 
     public EmailController(EmailService emailService) {
         this.emailService = emailService;
     }
 
-    @PostMapping("/send")
-    public ResponseEntity<String> sendEmail(
-            @RequestParam String subject,
-            @RequestParam String message,
-            @RequestParam String senderEmail) {
-
-        EmailRequest emailRequest = new EmailRequest("onboarding@resend.dev", "cloudnexus@googlegroups.com", subject, message,senderEmail);
-
-        boolean success = emailService.sendEmail(emailRequest);
-        return success ? ResponseEntity.ok("Email sent successfully!")
-                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send email.");
+    @PostMapping({"/send"})
+    public ResponseEntity<String> sendEmail(@RequestParam String subject, @RequestParam String message, @RequestParam String senderEmail) {
+        EmailRequest emailRequest = new EmailRequest("onboarding@resend.dev", "cloudnexus@googlegroups.com", subject, message, senderEmail);
+        boolean success = this.emailService.sendEmail(emailRequest);
+        return success ? ResponseEntity.ok("Email sent successfully!") : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send email.");
     }
 }

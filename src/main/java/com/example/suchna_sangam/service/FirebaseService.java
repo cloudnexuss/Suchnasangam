@@ -3,61 +3,66 @@ package com.example.suchna_sangam.service;
 
 import com.example.suchna_sangam.model.Alert;
 import com.example.suchna_sangam.model.AlertRequest;
-import com.google.firebase.database.*;
-import org.springframework.stereotype.Service;
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import org.springframework.stereotype.Service;
 
 @Service
 public class FirebaseService {
-
     private final FirebaseDatabase firebaseDatabase;
 
     public FirebaseService(FirebaseDatabase firebaseDatabase) {
         this.firebaseDatabase = firebaseDatabase;
     }
 
-    // Save a new alert to Firebase
     public void saveAlert(String districtName, AlertRequest request) {
-        DatabaseReference alertsRef = firebaseDatabase.getReference("suchna_sangam/districts/" + districtName + "/alerts");
-
+        DatabaseReference alertsRef = this.firebaseDatabase.getReference("suchna_sangam/districts/" + districtName + "/alerts");
         String alertId = alertsRef.push().getKey();
-        if (alertId == null) return;
+        if (alertId != null) {
+            String currentDate = (new SimpleDateFormat("yyyy-MM-dd")).format(new Date());
+            Map<String, Boolean> seenByMap = new HashMap();
+            Iterator var7 = request.getOperatorIds().iterator();
 
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            while(var7.hasNext()) {
+                String operatorId = (String)var7.next();
+                seenByMap.put(operatorId, false);
+            }
 
-        // Set all operators to false (unseen)
-        Map<String, Boolean> seenByMap = new HashMap<>();
-        for (String operatorId : request.getOperatorIds()) {
-            seenByMap.put(operatorId, false);
+            Alert alert = new Alert(request.getMessage(), currentDate, seenByMap);
+            alertsRef.child(alertId).setValueAsync(alert);
         }
-
-        Alert alert = new Alert(request.getMessage(), currentDate, seenByMap);
-
-        alertsRef.child(alertId).setValueAsync(alert);
     }
 
-    // Fetch all alerts from Firebase
     public List<Alert> getAlerts(String districtName) {
-        DatabaseReference alertsRef = firebaseDatabase.getReference("suchna_sangam/districts/" + districtName + "/alerts");
-        List<Alert> alerts = new ArrayList<>();
-        CountDownLatch latch = new CountDownLatch(1);
-
+        DatabaseReference alertsRef = this.firebaseDatabase.getReference("suchna_sangam/districts/" + districtName + "/alerts");
+        final List<Alert> alerts = new ArrayList();
+        final CountDownLatch latch = new CountDownLatch(1);
         alertsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
             public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot alertSnapshot : snapshot.getChildren()) {
-                    Alert alert = alertSnapshot.getValue(Alert.class);
+                Iterator var2 = snapshot.getChildren().iterator();
+
+                while(var2.hasNext()) {
+                    DataSnapshot alertSnapshot = (DataSnapshot)var2.next();
+                    Alert alert = (Alert)alertSnapshot.getValue(Alert.class);
                     if (alert != null) {
                         alerts.add(alert);
                     }
                 }
+
                 latch.countDown();
             }
 
-            @Override
             public void onCancelled(DatabaseError error) {
                 latch.countDown();
             }
@@ -65,41 +70,45 @@ public class FirebaseService {
 
         try {
             latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (InterruptedException var6) {
+            var6.printStackTrace();
         }
 
         return alerts;
     }
 
-    // Mark alerts as seen in Firebase
     public void markAlertsAsSeen(String districtName, String operatorId) {
-        DatabaseReference alertsRef = firebaseDatabase.getReference("suchna_sangam/districts/" + districtName + "/alerts");
-
+        DatabaseReference alertsRef = this.firebaseDatabase.getReference("suchna_sangam/districts/" + districtName + "/alerts");
         alertsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
             public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot alertSnapshot : snapshot.getChildren()) {
+                Iterator var2 = snapshot.getChildren().iterator();
+
+                while(var2.hasNext()) {
+                    DataSnapshot alertSnapshot = (DataSnapshot)var2.next();
                     alertSnapshot.child("seenBy").child(operatorId).getRef().setValueAsync(true);
                 }
+
             }
 
-            @Override
             public void onCancelled(DatabaseError error) {
                 System.err.println("Failed to update seenBy: " + error.getMessage());
             }
         });
     }
 
-    // Check if an operator has unseen alerts
     public boolean hasUnseenAlerts(String districtName, String operatorId) {
-        List<Alert> alerts = getAlerts(districtName);
+        List<Alert> alerts = this.getAlerts(districtName);
+        Iterator var4 = alerts.iterator();
 
-        for (Alert alert : alerts) {
-            if (alert.getSeenBy().containsKey(operatorId) && !alert.getSeenBy().get(operatorId)) {
-                return true; // Operator has at least one unseen alert
+        Alert alert;
+        do {
+            if (!var4.hasNext()) {
+                return false;
             }
-        }
-        return false;
+
+            alert = (Alert)var4.next();
+        } while(!alert.getSeenBy().containsKey(operatorId) || (Boolean)alert.getSeenBy().get(operatorId));
+
+        return true;
     }
 }
